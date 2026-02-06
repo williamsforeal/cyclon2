@@ -1,0 +1,197 @@
+{
+  "airtableSchemas": {
+    "actors": {
+      "tableName": "Actors",
+      "fields": {
+        "id": {
+          "type": "text",
+          "primary": true,
+          "description": "Unique identifier"
+        },
+        "name": {
+          "type": "text",
+          "required": true,
+          "description": "Actor name"
+        },
+        "imageUrl": {
+          "type": "url",
+          "required": true,
+          "description": "URL to actor's image"
+        },
+        "description": {
+          "type": "long text",
+          "description": "Actor description"
+        },
+        "voiceId": {
+          "type": "text",
+          "description": "11Labs voice ID (optional)"
+        },
+        "tags": {
+          "type": "multiple select",
+          "description": "Tags for categorization"
+        }
+      }
+    },
+    "scenes": {
+      "tableName": "Scenes",
+      "fields": {
+        "id": {
+          "type": "text",
+          "primary": true
+        },
+        "name": {
+          "type": "text",
+          "required": true
+        },
+        "description": {
+          "type": "long text",
+          "required": true
+        },
+        "imageUrl": {
+          "type": "url",
+          "description": "Base scene image URL"
+        },
+        "style": {
+          "type": "single select",
+          "options": ["professional", "casual", "dramatic", "minimal", "vibrant"],
+          "required": true
+        },
+        "tags": {
+          "type": "multiple select"
+        }
+      }
+    },
+    "products": {
+      "tableName": "Products",
+      "fields": {
+        "id": {
+          "type": "text",
+          "primary": true
+        },
+        "name": {
+          "type": "text",
+          "required": true
+        },
+        "description": {
+          "type": "long text",
+          "required": true
+        },
+        "imageUrl": {
+          "type": "url"
+        },
+        "price": {
+          "type": "number",
+          "format": "currency"
+        },
+        "category": {
+          "type": "single select",
+          "required": true
+        },
+        "features": {
+          "type": "long text",
+          "description": "Comma-separated features"
+        },
+        "targetAudience": {
+          "type": "multiple select"
+        }
+      }
+    },
+    "adCopies": {
+      "tableName": "AdCopies",
+      "fields": {
+        "id": {
+          "type": "text",
+          "primary": true
+        },
+        "productId": {
+          "type": "linked record",
+          "linkedTable": "Products",
+          "required": true
+        },
+        "headline": {
+          "type": "text",
+          "required": true
+        },
+        "body": {
+          "type": "long text",
+          "required": true
+        },
+        "callToAction": {
+          "type": "text",
+          "required": true
+        },
+        "tone": {
+          "type": "single select",
+          "options": ["professional", "casual", "humorous", "urgent", "inspirational"],
+          "required": true
+        },
+        "length": {
+          "type": "single select",
+          "options": ["short", "medium", "long"],
+          "required": true
+        },
+        "variantNumber": {
+          "type": "number",
+          "description": "1, 2, or 3"
+        },
+        "generatedAt": {
+          "type": "date",
+          "includeTime": true
+        }
+      }
+    },
+    "adVariants": {
+      "tableName": "AdVariants",
+      "fields": {
+        "id": {
+          "type": "text",
+          "primary": true
+        },
+        "productId": {
+          "type": "linked record",
+          "linkedTable": "Products",
+          "required": true
+        },
+        "actorId": {
+          "type": "linked record",
+          "linkedTable": "Actors",
+          "required": true
+        },
+        "sceneId": {
+          "type": "linked record",
+          "linkedTable": "Scenes",
+          "required": true
+        },
+        "adCopyId": {
+          "type": "linked record",
+          "linkedTable": "AdCopies"
+        },
+        "generatedImageUrl": {
+          "type": "url",
+          "description": "fal.ai generated image URL"
+        },
+        "status": {
+          "type": "single select",
+          "options": ["pending", "generating", "complete", "failed"],
+          "required": true,
+          "default": "pending"
+        },
+        "variantNumber": {
+          "type": "number",
+          "description": "1, 2, or 3",
+          "required": true
+        },
+        "createdAt": {
+          "type": "date",
+          "includeTime": true,
+          "required": true
+        },
+        "updatedAt": {
+          "type": "date",
+          "includeTime": true,
+          "required": true
+        }
+      }
+    }
+  }
+}

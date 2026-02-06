@@ -1,0 +1,34 @@
+{
+  "name": "cyclon2-n8n-ai-ads",
+  "version": "1.0.0",
+  "description": "n8n automation for AI-powered ad generation with Airtable, S3, ChatGPT, and fal.ai",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "deploy": "node scripts/deploy.js",
+    "backup": "node scripts/backup.js",
+    "validate": "node scripts/validate-config.js"
+  },
+  "keywords": [
+    "n8n",
+    "automation",
+    "ai",
+    "ad-generation",
+    "chatgpt",
+    "fal.ai",
+    "airtable",
+    "s3"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1400.0",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.0"
+  }
+}

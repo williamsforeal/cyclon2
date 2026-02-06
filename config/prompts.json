@@ -1,0 +1,73 @@
+{
+  "systemPrompts": {
+    "adCopyGeneration": {
+      "role": "system",
+      "content": "You are an expert advertising copywriter with 15+ years of experience in digital marketing and creative campaigns. Your specialty is creating compelling, conversion-focused ad copy that resonates with target audiences while maintaining brand voice and authenticity."
+    },
+    "variantGeneration": {
+      "role": "system",
+      "content": "Generate 3 distinct variants of ad copy for the same product. Each variant should:\n1. Target a slightly different angle or benefit\n2. Use a different tone (professional/casual/urgent)\n3. Emphasize different product features\n4. Maintain brand consistency\n5. Include clear call-to-action"
+    }
+  },
+  "userPromptTemplates": {
+    "productAd": "Create compelling ad copy for:\n\nPRODUCT: {{productName}}\nDESCRIPTION: {{productDescription}}\nFEATURES: {{productFeatures}}\nTARGET AUDIENCE: {{targetAudience}}\n\nACTOR: {{actorName}} - {{actorDescription}}\nSCENE: {{sceneName}} - {{sceneDescription}} (Style: {{sceneStyle}})\n\nGenerate ad copy with:\n- Attention-grabbing headline (max 60 characters)\n- Compelling body text (max 150 words)\n- Strong call-to-action (max 30 characters)\n\nTone should be {{tone}}. Format as JSON with keys: headline, body, callToAction",
+    
+    "imagePrompt": "Professional advertisement photo featuring {{actorName}} in a {{sceneStyle}} {{sceneName}} setting. {{productName}} product placement. {{sceneDescription}}. High quality, 4K, professional photography, advertisement style, {{tone}} mood, commercial photography.",
+    
+    "shortFormAd": "Quick 30-second ad copy for {{productName}}. Focus on one key benefit: {{mainBenefit}}. Use {{tone}} tone. Include hook, benefit, and CTA.",
+    
+    "longFormAd": "Comprehensive ad copy for {{productName}}. Cover multiple benefits, address pain points, include social proof elements. Target: {{targetAudience}}. {{tone}} tone throughout."
+  },
+  "toneGuides": {
+    "professional": {
+      "description": "Formal, authoritative, trustworthy",
+      "vocabulary": "sophisticated, industry-standard terms",
+      "structure": "logical, data-driven, benefit-focused"
+    },
+    "casual": {
+      "description": "Friendly, conversational, relatable",
+      "vocabulary": "everyday language, contractions, simple terms",
+      "structure": "storytelling, personal anecdotes, emotional connection"
+    },
+    "humorous": {
+      "description": "Witty, entertaining, memorable",
+      "vocabulary": "wordplay, pop culture references, light-hearted",
+      "structure": "setup-punchline, unexpected twists, playful"
+    },
+    "urgent": {
+      "description": "Time-sensitive, action-oriented, FOMO-inducing",
+      "vocabulary": "now, limited, exclusive, don't miss",
+      "structure": "short sentences, strong verbs, clear deadlines"
+    },
+    "inspirational": {
+      "description": "Motivating, uplifting, aspirational",
+      "vocabulary": "empowering language, positive emotions, possibility",
+      "structure": "transformation narrative, vision of success, call to action"
+    }
+  },
+  "bestPractices": {
+    "headlines": [
+      "Use numbers when possible (3 Ways, 5 Reasons, 10X Results)",
+      "Ask compelling questions",
+      "Promise specific benefits",
+      "Create curiosity gap",
+      "Use power words (Free, New, Proven, Guaranteed)"
+    ],
+    "body": [
+      "Lead with strongest benefit",
+      "Use bullet points for readability",
+      "Address specific pain points",
+      "Include social proof when available",
+      "Keep paragraphs short (2-3 sentences)",
+      "Use active voice",
+      "Focus on 'you' not 'we'"
+    ],
+    "cta": [
+      "Use action verbs (Get, Start, Discover, Try)",
+      "Create urgency (Today, Now, Limited Time)",
+      "Be specific (not 'Click Here' but 'Get Your Free Trial')",
+      "Remove friction ('No credit card required')",
+      "Make it stand out visually"
+    ]
+  }
+}

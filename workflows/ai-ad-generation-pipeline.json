@@ -1,0 +1,340 @@
+{
+  "name": "AI Ad Generation Pipeline",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "workflow-trigger",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "",
+      "credentials": {},
+      "notes": "Triggers the workflow on a schedule (e.g., every hour)"
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "base": "={{$env.AIRTABLE_BASE_ID}}",
+        "table": "={{$env.AIRTABLE_TABLE_ADVARIANT}}",
+        "filterByFormula": "={status}='pending'"
+      },
+      "id": "get-pending-variants",
+      "name": "Get Pending Ad Variants",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [450, 300],
+      "credentials": {
+        "airtableApi": {
+          "id": "1",
+          "name": "Airtable API"
+        }
+      },
+      "notes": "Fetch all pending ad variants from Airtable"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "recordId": "={{$json.fields.productId}}"
+      },
+      "id": "get-product",
+      "name": "Get Product Details",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [650, 200],
+      "credentials": {
+        "airtableApi": {
+          "id": "1",
+          "name": "Airtable API"
+        }
+      },
+      "notes": "Fetch product details for the ad"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "recordId": "={{$json.fields.actorId}}"
+      },
+      "id": "get-actor",
+      "name": "Get Actor Details",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [650, 300],
+      "credentials": {
+        "airtableApi": {
+          "id": "1",
+          "name": "Airtable API"
+        }
+      },
+      "notes": "Fetch actor details for the ad"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "recordId": "={{$json.fields.sceneId}}"
+      },
+      "id": "get-scene",
+      "name": "Get Scene Details",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [650, 400],
+      "credentials": {
+        "airtableApi": {
+          "id": "1",
+          "name": "Airtable API"
+        }
+      },
+      "notes": "Fetch scene details for the ad"
+    },
+    {
+      "parameters": {
+        "url": "https://api.openai.com/v1/chat/completions",
+        "method": "POST",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "={{$env.OPENAI_MODEL || 'gpt-4'}}"
+            },
+            {
+              "name": "messages",
+              "value": "=[{\"role\":\"system\",\"content\":\"You are an expert ad copywriter. Generate compelling ad copy based on the product, actor, and scene provided.\"},{\"role\":\"user\",\"content\":\"Product: {{$node['Get Product Details'].json.fields.name}}\\nDescription: {{$node['Get Product Details'].json.fields.description}}\\nActor: {{$node['Get Actor Details'].json.fields.name}}\\nScene: {{$node['Get Scene Details'].json.fields.name}}\\n\\nCreate ad copy with headline, body, and call to action.\"}]"
+            },
+            {
+              "name": "temperature",
+              "value": "0.8"
+            }
+          ]
+        }
+      },
+      "id": "generate-ad-copy",
+      "name": "Generate Ad Copy (ChatGPT)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [850, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "2",
+          "name": "OpenAI API"
+        }
+      },
+      "notes": "Generate ad copy variants using ChatGPT"
+    },
+    {
+      "parameters": {
+        "url": "https://fal.run/fal-ai/fast-sdxl",
+        "method": "POST",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Key {{$env.FAL_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{$node['Generate Ad Copy (ChatGPT)'].json.choices[0].message.content}}"
+            },
+            {
+              "name": "image_url",
+              "value": "={{$node['Get Actor Details'].json.fields.imageUrl}}"
+            },
+            {
+              "name": "strength",
+              "value": "0.65"
+            },
+            {
+              "name": "num_images",
+              "value": "3"
+            }
+          ]
+        }
+      },
+      "id": "generate-images",
+      "name": "Generate Images (fal.ai)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1050, 300],
+      "credentials": {},
+      "notes": "Generate 3 image variants using fal.ai img2img with strength 0.65"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "bucket": "={{$env.S3_BUCKET}}",
+        "fileName": "=ads/{{$node['Get Pending Ad Variants'].json.id}}_variant_{{$item.index}}.png",
+        "binaryData": true,
+        "binaryPropertyName": "data"
+      },
+      "id": "upload-to-s3",
+      "name": "Upload Images to S3",
+      "type": "n8n-nodes-base.s3",
+      "typeVersion": 1,
+      "position": [1250, 300],
+      "credentials": {
+        "s3": {
+          "id": "3",
+          "name": "AWS S3"
+        }
+      },
+      "notes": "Upload generated images to S3"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": "={{$env.AIRTABLE_BASE_ID}}",
+        "table": "={{$env.AIRTABLE_TABLE_ADVARIANT}}",
+        "recordId": "={{$node['Get Pending Ad Variants'].json.id}}",
+        "fields": {
+          "status": "complete",
+          "generatedImageUrl": "={{$node['Upload Images to S3'].json.url}}",
+          "updatedAt": "={{new Date().toISOString()}}"
+        }
+      },
+      "id": "update-airtable",
+      "name": "Update Airtable with Results",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [1450, 300],
+      "credentials": {
+        "airtableApi": {
+          "id": "1",
+          "name": "Airtable API"
+        }
+      },
+      "notes": "Write results back to Airtable"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Pending Ad Variants",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Pending Ad Variants": {
+      "main": [
+        [
+          {
+            "node": "Get Product Details",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Actor Details",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Scene Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Product Details": {
+      "main": [
+        [
+          {
+            "node": "Generate Ad Copy (ChatGPT)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Actor Details": {
+      "main": [
+        [
+          {
+            "node": "Generate Ad Copy (ChatGPT)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Scene Details": {
+      "main": [
+        [
+          {
+            "node": "Generate Ad Copy (ChatGPT)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Ad Copy (ChatGPT)": {
+      "main": [
+        [
+          {
+            "node": "Generate Images (fal.ai)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Images (fal.ai)": {
+      "main": [
+        [
+          {
+            "node": "Upload Images to S3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Images to S3": {
+      "main": [
+        [
+          {
+            "node": "Update Airtable with Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2026-02-06T20:41:00.000Z",
+  "versionId": "1"
+}
