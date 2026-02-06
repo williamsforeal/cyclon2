@@ -1,0 +1,106 @@
+{
+  "sampleActors": [
+    {
+      "name": "Sarah Johnson",
+      "imageUrl": "https://example.com/actors/sarah.jpg",
+      "description": "Professional business presenter, 35 years old, confident and approachable style",
+      "voiceId": "",
+      "tags": ["professional", "female", "30s", "business"]
+    },
+    {
+      "name": "Mike Chen",
+      "imageUrl": "https://example.com/actors/mike.jpg",
+      "description": "Tech enthusiast, 28 years old, casual and energetic personality",
+      "voiceId": "",
+      "tags": ["casual", "male", "20s", "tech"]
+    }
+  ],
+  "sampleScenes": [
+    {
+      "name": "Modern Office",
+      "description": "Bright, minimalist office space with large windows and clean lines",
+      "imageUrl": "https://example.com/scenes/office.jpg",
+      "style": "professional",
+      "tags": ["indoor", "office", "business", "clean"]
+    },
+    {
+      "name": "Outdoor Park",
+      "description": "Sunny park with green grass, trees, and natural lighting",
+      "imageUrl": "https://example.com/scenes/park.jpg",
+      "style": "casual",
+      "tags": ["outdoor", "natural", "relaxed", "bright"]
+    },
+    {
+      "name": "Tech Startup",
+      "description": "Modern tech office with exposed brick, standing desks, and gadgets",
+      "imageUrl": "https://example.com/scenes/startup.jpg",
+      "style": "casual",
+      "tags": ["indoor", "tech", "modern", "creative"]
+    }
+  ],
+  "sampleProducts": [
+    {
+      "name": "SmartWatch Pro X",
+      "description": "Advanced fitness tracking smartwatch with heart rate monitoring, GPS, and 7-day battery life. Perfect for athletes and fitness enthusiasts.",
+      "imageUrl": "https://example.com/products/smartwatch.jpg",
+      "price": 299.99,
+      "category": "Electronics",
+      "features": ["Heart rate monitoring", "GPS tracking", "7-day battery", "Water resistant", "Sleep tracking", "50+ sports modes"],
+      "targetAudience": ["fitness enthusiasts", "athletes", "tech lovers", "health conscious"]
+    },
+    {
+      "name": "Organic Green Tea",
+      "description": "Premium organic green tea sourced from sustainable farms. Rich in antioxidants, supports metabolism and energy.",
+      "imageUrl": "https://example.com/products/greentea.jpg",
+      "price": 24.99,
+      "category": "Food & Beverage",
+      "features": ["100% organic", "Fair trade certified", "Rich in antioxidants", "30 tea bags", "Sustainably sourced"],
+      "targetAudience": ["health conscious", "tea lovers", "eco-friendly consumers"]
+    },
+    {
+      "name": "Productivity Planner 2024",
+      "description": "Beautifully designed planner to help you achieve your goals. Features daily, weekly, and monthly planning pages with habit trackers.",
+      "imageUrl": "https://example.com/products/planner.jpg",
+      "price": 34.99,
+      "category": "Stationery",
+      "features": ["365 daily pages", "Goal setting templates", "Habit tracker", "Premium paper", "Hardcover binding", "Inspirational quotes"],
+      "targetAudience": ["professionals", "students", "goal-oriented individuals", "ADHD community"]
+    }
+  ],
+  "sampleAdVariant": {
+    "productId": "[Link to SmartWatch Pro X]",
+    "actorId": "[Link to Sarah Johnson]",
+    "sceneId": "[Link to Modern Office]",
+    "status": "pending",
+    "variantNumber": 1,
+    "createdAt": "2024-01-15T10:00:00Z",
+    "updatedAt": "2024-01-15T10:00:00Z",
+    "notes": "This is a sample ad variant ready to be processed by the pipeline"
+  },
+  "instructions": {
+    "importToAirtable": [
+      "1. Create your Airtable base with the tables defined in config/airtable-schema.json",
+      "2. Copy the sample data above into respective tables",
+      "3. Replace example.com URLs with your actual image URLs",
+      "4. For AdVariant, use the Linked Record fields to connect to Actors, Scenes, and Products",
+      "5. Set status to 'pending' to trigger the workflow",
+      "6. n8n will automatically process and update the status to 'complete'"
+    ],
+    "testingTips": [
+      "Start with just 1 actor, 1 scene, and 1 product",
+      "Create 3 ad variants (variantNumber: 1, 2, 3) for the same product",
+      "Use different actors or scenes for variety",
+      "Test the pipeline with manual execution first",
+      "Check n8n logs for any errors",
+      "Verify images are uploaded to S3",
+      "Check Airtable for status updates"
+    ],
+    "imageRequirements": [
+      "Format: JPG or PNG",
+      "Size: Recommended 1024x1024 or larger",
+      "Aspect ratio: Square (1:1) works best for img2img",
+      "Quality: High resolution for best results",
+      "Content: Clear, well-lit photos of people or scenes"
+    ]
+  }
+}
